@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Estoque - JMacêdo</title>
+<style>
+    :root {
+        --azul-claro: #23a6d5;
+        --laranja: #f2994a;
+        --branco: #ffffff;
+        --cinza-claro: #f5f5f5;
+        --cinza-escuro: #555555;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: var(--cinza-claro);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    header {
+        background-color: var(--branco);
+        width: 100%;
+        padding: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    header img {
+        max-height: 70px;
+    }
+
+    main {
+        width: 95%;
+        max-width: 500px;
+        margin-top: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--azul-claro);
+        margin-bottom: 10px;
+    }
+
+    .instructions {
+        text-align: center;
+        font-size: 14px;
+        color: var(--cinza-escuro);
+        margin-bottom: 15px;
+    }
+
+    form {
+        background-color: var(--branco);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    input, button {
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--azul-claro);
+        box-shadow: 0 0 5px rgba(35,166,213,0.5);
+    }
+
+    button {
+        background-color: var(--laranja);
+        color: var(--branco);
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    button:hover {
+        background-color: #e08b3f;
+    }
+
+    #reader {
+        width: 100%;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    @media (max-width: 600px) {
+        form {
+            padding: 15px;
+        }
+        input, button {
+            font-size: 14px;
+            padding: 10px;
+        }
+    }
+</style>
+</head>
+<body>
+<header>
+    <img src="{{ url_for('static', filename='logo_jmacedo.png') }}" alt="JMacêdo">
+</header>
+<main>
+    <h1>Controle de Estoque</h1>
+    <p class="instructions">Aponte a câmera do tablet para o QR Code do endereço</p>
+
+    <!-- Leitor de QR Code -->
+    <div id="reader"></div>
+
+    <form method="POST">
+        <input type="text" id="endereco" name="endereco" placeholder="Endereço" required>
+        <input type="text" name="sku" placeholder="SKU" required>
+        <input type="text" name="lote" placeholder="Lote" required>
+        <input type="date" name="validade" placeholder="Validade" required>
+        <input type="number" name="quantidade" placeholder="Quantidade" required>
+        <input type="text" name="conferente" placeholder="Conferente" required>
+        <button type="submit">Salvar Conferência</button>
+    </form>
+</main>
+
+<!-- HTML5 QR Code -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+function onScanSuccess(decodedText, decodedResult) {
+    // Preenche o campo endereço automaticamente
+    document.getElementById("endereco").value = decodedText;
+    // Para a leitura após capturar
+    html5QrcodeScanner.clear().catch(error => { console.log(error); });
+}
+
+let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", { fps: 10, qrbox: 250 }
+);
+html5QrcodeScanner.render(onScanSuccess);
+</script>
+
+</body>
+</html>
